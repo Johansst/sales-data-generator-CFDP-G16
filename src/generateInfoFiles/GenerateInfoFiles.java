@@ -23,7 +23,17 @@ public class GenerateInfoFiles {
     
     private static final String[] DOCUMENT_TYPES = {
             "C.C.", "C.E.", "P.T."
-        };
+    };
+    
+    private static final String[] PRODUCT_NAMES = {
+    	    "Shampoo", "Jabón", "Crema", "Perfume", "Desodorante",
+    	    "Gel", "Loción", "Maquillaje", "Protector solar", "Acondicionador",
+    	    "Talco", "Aceite corporal", "Exfoliante", "Mascarilla facial", "Tónico",
+    	    "Serum", "Espuma limpiadora", "Pasta dental", "Enjuague bucal", "Hilo dental",
+    	    "Crema de manos", "Crema para pies", "Bálsamo labial", "Aftershave", "Cera para cabello",
+    	    "Spray fijador", "Toallitas húmedas", "Gel antibacterial", "Crema antiarrugas", "Colonia"
+    };
+
     
     private static List<Long> generatedDocuments = new ArrayList<>();
 
@@ -39,9 +49,9 @@ public class GenerateInfoFiles {
      */
     public static void main(String[] args) {
     	
-        createSalesManInfoFile(20); 							//1. Generates vendors
-        createProductsFile(20); 								//2. Generates products
-        createSalesMenFile(20, "Example name", 100354894);		//3. Generates sells sending a name and ID through parameters
+    	createSalesmanInfoFile(10); 							//1. Generates vendors
+        createProductsFile(10); 								//2. Generates products
+        createSalesmenFile(10, "Example name", 100354894);		//3. Generates sells sending a name and ID through parameters
         
     }
     
@@ -102,8 +112,8 @@ public class GenerateInfoFiles {
      * 
      * @param salesmanCount number of vendors to generate
      */
-    public static void createSalesManInfoFile( int salesmanCount ) {
-    	try (PrintWriter pw = new PrintWriter("vendors.csv")) {
+    public static void createSalesmanInfoFile( int salesmanCount ) {
+    	try (PrintWriter pw = new PrintWriter("SalesmanInfoFile.csv")) {
         	for(int i = 0; i < salesmanCount; i++) {
         		String documentType = getRandomElementFromArray(DOCUMENT_TYPES);
         		long id = getUniqueDocument();
@@ -111,17 +121,35 @@ public class GenerateInfoFiles {
         		
                 pw.println(documentType+"; "+id + "; " + fullName);
         	}
+        	System.out.println("Salesman info file generated successfully!");
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("An error occurred while generating the Salesman info file\n"+e.toString());
         }
 
     }
     
-    public static void createProductsFile(int productsCount ) {
-    	
+    /**
+     * Creates a text file with random products according to the number received from parameter 
+     * 
+     * @param productsCount number of products to generate
+     */
+    public static void createProductsFile(int productsCount) {
+        try (PrintWriter pw = new PrintWriter("Products.csv")) {
+            for (int i = 1; i <= productsCount; i++) {
+                String productName = getRandomElementFromArray(PRODUCT_NAMES);
+                int price = (int)(Math.random() * 50000) + 5000;
+
+                pw.println(i + "; " + productName + "; " + price);
+            }
+            System.out.println("Products file generated successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("An error occurred while generating the products file\n"+e.toString());
+        }
     }
-    
-    public static void createSalesMenFile(int randomSalesCount, String name, long id){
+
+    public static void createSalesmenFile(int randomSalesCount, String name, long id){
     	
     }
 }
