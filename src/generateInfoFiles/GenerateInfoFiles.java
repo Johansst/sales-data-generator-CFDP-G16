@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashMap;
 
 public class GenerateInfoFiles {
 
@@ -34,16 +37,14 @@ public class GenerateInfoFiles {
     	    "Spray fijador", "Toallitas húmedas", "Gel antibacterial", "Crema antiarrugas", "Colonia"
     };
 
-    
     private static List<Long> generatedDocuments = new ArrayList<>();
-
     
     
     /**
      * Main method that generates all input files needed for the sales report program.
      * 1. Generates a file with random vendor information.
      * 2. Generates a file with random product information.
-     * 3. Generates a file with random sales for a given vendor.
+     * 3. Generates a file with random sales
      *
      * @param args command line arguments (not used)
      */
@@ -51,12 +52,11 @@ public class GenerateInfoFiles {
     	
     	createSalesmanInfoFile(10); 							//1. Generates vendors
         createProductsFile(10); 								//2. Generates products
-        createSalesmenFile(10, "Example name", 100354894);		//3. Generates sells sending a name and ID through parameters
+        createSalesFile(10);		                            //3. Generates sells 
         
     }
     
-    
-    
+ 
     /**
      * Generates a full random name with two names and two last names.
      * 
@@ -148,8 +148,74 @@ public class GenerateInfoFiles {
             System.out.println("An error occurred while generating the products file\n"+e.toString());
         }
     }
+    
 
-    public static void createSalesmenFile(int randomSalesCount, String name, long id){
-    	
-    }
+    public static void createSalesFile(int salesPerSalesman){
+	
+	    HashMap<Integer, Integer> products = new HashMap<>();
+	    List<String[]> salesmen = new ArrayList<>();
+	
+	    // 🔹 Read products (id + price)
+	    try (BufferedReader br = new BufferedReader(new FileReader("Products.csv"))) {
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            String[] data = line.split(";");
+	            int productId = Integer.parseInt(data[0].trim());
+	            int price = Integer.parseInt(data[2].trim());
+	            products.put(productId, price);
+	        }
+	    } catch (IOException e) {
+	        System.out.println("Error reading products file");
+	        e.printStackTrace();
+	    }
+	
+	    List<Integer> productIds = new ArrayList<>(products.keySet());
+	
+	    // Read salesman
+	    try (BufferedReader br = new BufferedReader(new FileReader("SalesmanInfoFile.csv"))) {
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            String[] data = line.split(";");
+	            String id = data[1].trim();
+	            String name = data[2].trim() + " " + data[3].trim();
+	            salesmen.add(new String[]{id, name});
+	        }
+	    } catch (IOException e) {
+	        System.out.println("Error reading salesmen file");
+	        e.printStackTrace();
+	    }
+	
+	    // Validation
+		if (products.isEmpty() || salesmen.isEmpty()) {
+		    System.out.println("No data available to generate sales.");
+		    return;
+		}
+	
+	    
+	    // Generate sales
+	    try (PrintWriter pw = new PrintWriter("Sales.csv")) {
+	
+	        for (String[] salesman : salesmen) {
+	
+	            String id = salesman[0];
+	            String name = salesman[1];
+	
+	            for (int i = 0; i < salesPerSalesman; i++) {
+	
+	                int productId = productIds.get((int)(Math.random() * productIds.size()));
+	                int quantity = (int)(Math.random() * 5) + 1;
+	
+	                int price = products.get(productId);
+	                int total = price * quantity;
+	
+	                pw.println(id + "; " + name + "; " + productId + "; " + quantity + "; " + total);
+	            }
+	        }
+	
+	        System.out.println("Sales file generated successfully!");
+	
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 }
