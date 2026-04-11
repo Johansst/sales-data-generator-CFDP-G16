@@ -37,6 +37,8 @@ public class GenerateInfoFiles {
     };
 
     private static List<Long> generatedDocuments = new ArrayList<>();
+    
+    private static final int NUMBER_SALESMAN = 8, NUMBER_PRODUCTS = 20; 
 
     /**
      * Main method that generates all input files needed for the sales report program.
@@ -47,15 +49,15 @@ public class GenerateInfoFiles {
      * @param args command line arguments (not used)
      */
     public static void main(String[] args) {
-        createSalesmanInfoFile(10);
-        createProductsFile(10);
-        generateSalesFilesFromVendors();
+        createSalesmanInfoFile(NUMBER_SALESMAN);
+        createProductsFile(NUMBER_PRODUCTS);
+        generateSalesFilesFromVendors(NUMBER_SALESMAN);
     }
 
     /**
      * Reads the salesmen info file and generates a sales file for each vendor found.
      */
-    public static void generateSalesFilesFromVendors() {
+    public static void generateSalesFilesFromVendors(int numberSalesman) {
         List<String[]> salesmen = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader("SalesmanInfoFile.csv"))) {
@@ -74,9 +76,10 @@ public class GenerateInfoFiles {
         }
 
         for (String[] salesman : salesmen) {
-            createSalesMenFile(10, salesman[2], Long.parseLong(salesman[1]));
+            createSalesMenFile(numberSalesman, salesman[2], Long.parseLong(salesman[1]));
         }
     }
+
     /**
      * Generates a full random name with two names and two last names.
      *
