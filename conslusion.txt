@@ -1,0 +1,11 @@
+Lo aprendido:
+Durante el desarrollo de este proyecto se logró comprender de manera práctica el manejo de archivos en Java, incluyendo la lectura y escritura de archivos planos (CSV), así como la organización y procesamiento de información proveniente de múltiples fuentes. También se reforzaron conceptos importantes como el uso de estructuras de datos (listas y mapas), la modularización del código mediante métodos y la separación de responsabilidades en distintas clases.
+
+Aplicación en la vida profesional:
+Las habilidades adquiridas son fundamentales para el desarrollo de software que requiere procesamiento de datos, generación de reportes y automatización de tareas. Este tipo de soluciones es común en áreas como análisis de datos, sistemas empresariales y desarrollo backend.
+
+Dificultades:
+Durante el desarrollo del proyecto se presentaron algunas dificultades, principalmente relacionadas con la correcta lectura de archivos, el manejo de rutas y la coherencia entre los datos generados y los procesados. También fue un reto entender la estructura solicitada del proyecto, especialmente la separación entre la clase generadora de datos y la clase encargada de procesarlos. Sin embargo, estas dificultades permitieron fortalecer la comprensión del flujo completo de un programa y mejorar las prácticas de programación.
+
+Conclusión:
+El proyecto permitió consolidar conocimientos clave de programación en Java, mejorar la lógica de resolución de problemas y desarrollar una solución estructurada y funcional que cumple con los requisitos planteados.
