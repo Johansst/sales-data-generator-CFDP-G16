@@ -25,6 +25,7 @@ public class Main {
         if (!salesmen.isEmpty()) {
             List<String[]> salesmenWithTotals = calculateTotals(salesmen);
             generateReport(salesmenWithTotals);
+            generateProductsReport(salesmen);
         } else {
             System.out.println("No salesmen found. Make sure SalesmanInfoFile.csv exists.");
         }
@@ -152,4 +153,86 @@ public class Main {
             System.out.println("An error occurred while generating the sales report\n" + e.toString());
         }
     }
+
+public static void generateProductsReport(List<String[]> salesmen) {
+
+    HashMap<Integer, Integer> productTotals = new HashMap<>();
+    HashMap<Integer, String> productNames = new HashMap<>();
+
+    // 🔹 Read products (name + id)
+    try (BufferedReader br = new BufferedReader(new FileReader("Products.csv"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(";");
+            int id = Integer.parseInt(data[0].trim());
+            String name = data[1].trim();
+
+            productNames.put(id, name);
+            productTotals.put(id, 0);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    // 🔹 Read sells from every salesmen 
+    for (String[] salesman : salesmen) {
+
+        String id = salesman[1];
+
+        try (BufferedReader br = new BufferedReader(new FileReader("Sales_" + id + ".csv"))) {
+
+            String line;
+            boolean firstLine = true;
+
+            while ((line = br.readLine()) != null) {
+
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String[] data = line.split(";");
+                int productId = Integer.parseInt(data[0].trim());
+                int quantity = Integer.parseInt(data[1].trim());
+
+                productTotals.put(productId,
+                        productTotals.getOrDefault(productId, 0) + quantity);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 🔹 Convert to list for ordering
+    List<int[]> productList = new ArrayList<>();
+
+    for (Integer id : productTotals.keySet()) {
+        productList.add(new int[]{id, productTotals.get(id)});
+    }
+
+    // 🔹 Ordering DESC
+    Collections.sort(productList, new Comparator<int[]>() {
+        public int compare(int[] a, int[] b) {
+            return b[1] - a[1];
+        }
+    });
+
+    // 🔹 Creating file
+    try (PrintWriter pw = new PrintWriter("ProductsReport.csv")) {
+
+        pw.println("Producto;CantidadVendida");
+
+        for (int[] p : productList) {
+            String name = productNames.get(p[0]);
+            pw.println(name + ";" + p[1]);
+        }
+
+        System.out.println("Products report generated successfully!");
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
 }
